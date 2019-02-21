@@ -8,7 +8,7 @@ const hypeauditorScraper = (username) => {
         let browser;
 
         try {
-            const proxy = 'http://212.68.168.202:43298';
+            const proxy = 'http://176.9.211.175:8080';
             //const proxy = await getRandomProxy();
             const userAgent = await getRandomUserAgent();
 
