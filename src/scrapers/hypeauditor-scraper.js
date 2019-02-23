@@ -2,17 +2,24 @@ import puppeteer from 'puppeteer';
 import getRandomProxy from './options/getRandomProxy';
 import getRandomUserAgent from './options/getRandomUserAgent';
 import haParser from './parsers/haParser';
+import removeProxy from './options/removeProxy';
+import isProxyListEmpty from './options/isProxyListEmpty';
+import pm2 from 'pm2';
 
 const hypeauditorScraper = (username) => {
     return new Promise(async (resolve, reject) => {
         let browser;
 
         try {
-            const proxy = 'http://176.9.211.175:8080';
-            //const proxy = await getRandomProxy();
+            const plEmpty = await isProxyListEmpty();
+            if(plEmpty) pm2.stop('all');
+
+            const proxy = await getRandomProxy();
             const userAgent = await getRandomUserAgent();
 
-            browser = await puppeteer.launch({ headless: false, args: [`--proxy-server=${proxy}`, `--user-agent=${userAgent}`]});
+            removeProxy();
+
+            browser = await puppeteer.launch({ args: [`--proxy-server=${proxy}`, `--user-agent=${userAgent}`]});
             const page = await browser.newPage();
             await page.setViewport({ width: 1920, height: 1080 });
             await page.setRequestInterception(true);
@@ -35,7 +42,7 @@ const hypeauditorScraper = (username) => {
         }
 
         catch(err) {
-            console.log(err);
+            throw new Error(err);
         }
 
         finally {
