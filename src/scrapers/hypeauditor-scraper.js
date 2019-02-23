@@ -17,7 +17,7 @@ const hypeauditorScraper = (username) => {
             const proxy = await getRandomProxy();
             const userAgent = await getRandomUserAgent();
 
-            removeProxy();
+            removeProxy(proxy);
 
             browser = await puppeteer.launch({ args: [`--proxy-server=${proxy}`, `--user-agent=${userAgent}`]});
             const page = await browser.newPage();
@@ -28,12 +28,12 @@ const hypeauditorScraper = (username) => {
                 else req.continue();
             })
 
-            await page.goto("https://www.google.com/", { timeout: 0 });
-            await page.goto("https://hypeauditor.com", { timeout: 0 });
+            await page.goto("https://www.google.com/", { timeout: 50000 });
+            await page.goto("https://hypeauditor.com", { timeout: 40000 });
 
             const user_url = `https://hypeauditor.com/preview/${username}`;
-            await page.goto(user_url, { timeout: 0 });
-            await page.waitFor('#report_preview_follower_growth .report_preview_follower_change');
+            await page.goto(user_url, { timeout: 40000 });
+            await page.waitFor('#report_preview_follower_growth .report_preview_follower_change', { timeout: 40000 });
 
             const html = await page.content();
             const userData = await haParser(html);

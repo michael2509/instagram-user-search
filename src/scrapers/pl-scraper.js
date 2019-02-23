@@ -5,7 +5,7 @@ import plParser from './parsers/plParser';
 
 const scrapePL = async (url) => {
     const userAgent = await getRandomUserAgent();
-    const proxy = 'http://182.52.51.4:39047';
+    const proxy = 'http://204.152.206.38:5836';
 
     const options = {
         uri: url,

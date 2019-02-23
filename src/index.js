@@ -16,6 +16,11 @@ server.listen(5000, async () => {
         console.log("Process will restart now.");
         process.exit(1);
     })
+    process.on('unhandledRejection', function(e) {
+        console.log('An error has occured. error is: %s and stack trace is: %s', e, e.stack);
+        console.log("Process will restart now.");
+        process.exit(1);
+    })
 
 
     try {
@@ -28,12 +33,13 @@ server.listen(5000, async () => {
             saveToDB(userData);
             const haUsers = await storage.getItem('hypeauditor-users');
             haUsers.push(userData);
-            storage.setItem('hypeauditor-users', haUsers);
+            await storage.setItem('hypeauditor-users', haUsers);
             requestCounter++;
-            storage.setItem('request-counter', requestCounter);
+            await storage.setItem('request-counter', requestCounter);
+
+            if(i === usernameList.length - 1) pm2.stop('all');
         }
 
-        pm2.stop('all');
     }
 
     catch(err) {
